@@ -1,20 +1,30 @@
 #include "sp_model.h"
 #include "sp_controller.h"
 
+#include <QDebug>
+
 SP_Model::SP_Model(QObject *parent)
     :QObject(parent)
 {
-    connect(m_controller,&SP_Controller::notifyPainterState,[=](QColor color){
-        m_color = color;
-    });
+//    connect(m_controller,&SP_Controller::notifyPainterState,[=](QColor color){
+//        m_color = color;
+//    });
 
-    connect(this,&SP_Model::UnTodoEvent,m_controller,&SP_Controller::UnTodoEventHandler);
+
+
+}
+
+SP_Model::~SP_Model()
+{
 
 }
 
 void SP_Model::setController(SP_Controller *ctr)
 {
     m_controller = ctr;
+
+    connect(this,&SP_Model::UnTodoEvent,m_controller,&SP_Controller::UnTodoEventHandler);
+    connect(m_controller,&SP_Controller::undosigal,this,&SP_Model::undo);
 }
 
 //开始收集点
@@ -34,7 +44,8 @@ void SP_Model::onEndColloctPoint(int x, int y)
         //TODO::error 处理
     }else{
         m_points.clear();
-        m_UndoStack.push(ActionData(m_points,m_color));
+        ActionData a(m_points,m_color);
+        m_UndoStack.push(a);
     }
 }
 
@@ -50,6 +61,7 @@ void SP_Model::onColloctPoint(int x, int y)
 
 void SP_Model::undo(int times)
 {
+    qDebug()<<"SP_Controller::undo() ccccccccccccccccc";
     Q_UNUSED(times)
 
     if(m_UndoStack.empty()){

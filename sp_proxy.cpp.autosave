@@ -1,6 +1,0 @@
-#include "sp_proxy.h"
-
-SP_Proxy::SP_Proxy(QObject *parent):QObject(parent)
-{
-    udpSocket = new QUdpSocket(this);
-}

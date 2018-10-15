@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QColor>
+#include <QPoint>
+#include <QList>
 
 //class painterStates:public QObject
 //{
@@ -25,7 +27,8 @@ public slots:
     Q_INVOKABLE void onMousePositionChanged(int x,int y);
     Q_INVOKABLE void onColorChange(QColor color);
 
-    void UnTodoEventHandler(QList<QPoint> data);
+    Q_INVOKABLE void undo();
+    Q_INVOKABLE void UnTodoEventHandler(QList<QPoint>& data);
 
 signals:
     void beginCollectPoint(int x,int y);
@@ -35,6 +38,8 @@ signals:
     void sendData(int mouseAct,int x,int y);
 
     void notifyPainterState(QColor color);
+
+    void undosigal(int times);
 
 private:
     int m_mouseAction;     //记录鼠标操作，暂时用int  0:pressed 1:relesed 2:holdon

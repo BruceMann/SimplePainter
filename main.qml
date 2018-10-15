@@ -54,10 +54,14 @@ Window {
                 }
             }
 
+            Column{
+
+                spacing:5
+
             Button{
-                width: 96
-                height: 26
                 id:clear
+                width: 96
+                height: 26                
                 text: "clear"
                 onClicked: {
                     var ctx = canvas.getContext("2d")
@@ -66,6 +70,21 @@ Window {
                     ctx.fillRect(0,0,canvas.width,canvas.height)
                     canvas.requestPaint()
                 }
+            }
+
+            Button{
+                id:undo
+                width: 96
+                height: 20
+                text: "undo"
+                onClicked: {
+                    //var ctx = canvas.getContext("2d")
+//                    controller.UnTodoEventHandler();
+                   // canvas.requestPaint()
+                    controller.undo();
+                }
+            }
+
             }
         }
 

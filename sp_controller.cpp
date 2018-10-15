@@ -1,4 +1,5 @@
 #include "sp_controller.h"
+#include <QDebug>
 
 SP_Controller::SP_Controller(QObject* parent):QObject(parent)
 {
@@ -37,7 +38,13 @@ void SP_Controller::onColorChange(QColor color)
     m_color = color;
 }
 
-void SP_Controller::UnTodoEventHandler(QList<QPoint> data)
+void SP_Controller::undo()
 {
+    qDebug()<<"SP_Controller::undo()";
+    emit undosigal(1);
+}
 
+void SP_Controller::UnTodoEventHandler(QList<QPoint> &data)
+{
+    qDebug()<<"DDDDDDDDDD"<<data.size();
 }

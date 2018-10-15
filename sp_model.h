@@ -11,8 +11,11 @@ class SP_Controller;
 
 typedef QList<QPoint> PointsList;
 
-struct ActionData    //一个操作的数据结构
+class ActionData    //一个操作的数据结构
 {
+   public:
+    ActionData(){}
+
     ActionData(PointsList p,QColor c){
         points = p;
         states = c;
@@ -40,7 +43,7 @@ public slots:
     void undo(int times=1);    //undo操作，@param times 撤销次数 默认一次TODO::目前只处理一次
 
 signals:
-    void UnTodoEvent(QList<QPoint> points);
+    void UnTodoEvent(QList<QPoint> &points);
 
 private:
     QColor m_color;  //TODO 此处要改为painterState数据结构，以记录其他绘画状态
