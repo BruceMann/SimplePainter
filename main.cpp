@@ -3,6 +3,7 @@
 #include <QtQml/QQmlContext>
 
 #include "datamodel.h"
+#include "sp_controller.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<PointData>("DataModel",1,0,"PointData");
     qmlRegisterType<DataModel>("DataModel",1,0,"DataModel");
+    qmlRegisterType<SP_Controller>("Controller",1,0,"Controller");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

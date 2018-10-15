@@ -15,7 +15,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    datamodel.cpp
+    datamodel.cpp \
+    sp_controller.cpp \
+    sp_proxy.cpp \
+    sp_model.cpp
 
 RESOURCES += qml.qrc
 
@@ -31,6 +34,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    datamodel.h
+    datamodel.h \
+    sp_controller.h \
+    sp_proxy.h \
+    sp_model.h
 
 DISTFILES +=

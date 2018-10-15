@@ -2,7 +2,9 @@ import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.Controls 2.2
 
+
 import DataModel 1.0
+import Controller 1.0
 
 Window {
     visible: true
@@ -17,10 +19,15 @@ Window {
         anchors.fill:parent
 
         DataModel{
-            id:dataModel;
+            id:dataModel
             pointData.onPosChanged: {
                 canvas.requestPaint()
             }
+        }
+
+        Controller{
+            id:controller
+
         }
 
         Row{
@@ -42,6 +49,7 @@ Window {
                     onClicked:{
                         colorTools.painterColor = color
                         console.log(colorTools.painterColor)
+                        controller.onColorChange(color);
                     }
                 }
             }
@@ -109,9 +117,8 @@ Window {
                         lastX = dataModel.pointData.posX
                         lastY = dataModel.pointData.posY
                         console.log("lastX,lastY"+lastX+" "+lastY)
-
-                        //ctx.moveTo(lastX,lastY)
-                    }else if(dataModel.pointData.opera===2){
+                    }
+                    else if(dataModel.pointData.opera===2){
                         console.log("dataModel.pointData.opera===2")
                         ctx.moveTo(lastX,lastY)
                         currentX = dataModel.pointData.posX
@@ -123,12 +130,10 @@ Window {
                         console.log("dataModel.pointData.opera!==1")
                         ctx.lineTo(currentX,currentY)
                         console.log("currentX,currentY"+currentX+" "+currentY)
-
                         console.log("lastX,lastY"+lastX+" "+lastY)
                     }
                     ctx.stroke()
                 }
-
             }
 
             MouseArea{
@@ -138,16 +143,21 @@ Window {
                     canvas.isSender = true
                     canvas.lastX = mouseX
                     canvas.lastY = mouseY
-                    dataModel.broadcastDatagram(mouseX,mouseY,0,canvas.color)
+                    //dataModel.broadcastDatagram(mouseX,mouseY,0,canvas.color)
+                    controller.onMousePressed(mouseX,mouseY);
                 }
                 onReleased: {
                     canvas.isSender = false
-                    dataModel.broadcastDatagram(mouseX,mouseY,1,canvas.color)
+                    //dataModel.broadcastDatagram(mouseX,mouseY,1,canvas.color)
+                    controller.onMouseRelesed(mouseX,mouseY);
                 }
                 onPositionChanged: {
-                    //console.log("############### canvas.color"+canvas.color)
-                    dataModel.broadcastDatagram(mouseX,mouseY,2,canvas.color)
+
+                    //dataModel.broadcastDatagram(mouseX,mouseY,2,canvas.color)
+
+                    controller.onMousePositionChanged(mouseX,mouseY);
                     canvas.requestPaint()
+
                 }
             }
 
