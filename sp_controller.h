@@ -25,10 +25,12 @@ public slots:
     Q_INVOKABLE void onMousePositionChanged(int x,int y);
     Q_INVOKABLE void onColorChange(QColor color);
 
+    void UnTodoEventHandler(QList<QPoint> data);
+
 signals:
     void beginCollectPoint(int x,int y);
     void collectPoint(int x,int y);
-    void endColllectPoint();
+    void endCollectPoint(int x,int y);
 
     void sendData(int mouseAct,int x,int y);
 
