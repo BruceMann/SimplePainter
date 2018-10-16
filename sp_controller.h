@@ -1,10 +1,12 @@
-#ifndef SP_CONTROLLER_H
-#define SP_CONTROLLER_H
+#ifndef SPController_H
+#define SPController_H
 
 #include <QObject>
 #include <QColor>
 #include <QPoint>
 #include <QList>
+
+class SPModel;
 
 //class painterStates:public QObject
 //{
@@ -14,12 +16,15 @@
 //    int m_pixSize;         //线宽像素大小
 //};
 
-class SP_Controller:public QObject
+class SPController:public QObject
 {
     Q_OBJECT
+
+
 public:
-    explicit SP_Controller(QObject* parent=nullptr);
-    ~SP_Controller();
+    explicit SPController(QObject* parent=nullptr);
+
+    ~SPController();
 
 public slots:
     Q_INVOKABLE void onMousePressed(int x,int y);
@@ -28,7 +33,7 @@ public slots:
     Q_INVOKABLE void onColorChange(QColor color);
 
     Q_INVOKABLE void undo();
-    Q_INVOKABLE void UnTodoEventHandler(QList<QPoint>& data);
+    void UnTodoEventHandler(QList<QPoint>& data);
 
 signals:
     void beginCollectPoint(int x,int y);
@@ -39,14 +44,14 @@ signals:
 
     void notifyPainterState(QColor color);
 
-    void undosigal(int times);
+    void undosigal();
 
 private:
     int m_mouseAction;     //记录鼠标操作，暂时用int  0:pressed 1:relesed 2:holdon
 
     QColor m_color;        //记录画笔颜色
     //int m_pixSize;         //线宽像素大小
-
+    SPModel *m_model;
 };
 
-#endif // SP_CONTROLLER_H
+#endif // SPController_H

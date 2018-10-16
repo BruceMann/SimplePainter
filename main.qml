@@ -2,9 +2,8 @@ import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.Controls 2.2
 
-
-import DataModel 1.0
 import Controller 1.0
+import View 1.0
 
 Window {
     visible: true
@@ -17,13 +16,6 @@ Window {
         id:root
         color:"lightBlue"
         anchors.fill:parent
-
-        DataModel{
-            id:dataModel
-            pointData.onPosChanged: {
-                canvas.requestPaint()
-            }
-        }
 
         Controller{
             id:controller
@@ -78,9 +70,6 @@ Window {
                 height: 20
                 text: "undo"
                 onClicked: {
-                    //var ctx = canvas.getContext("2d")
-//                    controller.UnTodoEventHandler();
-                   // canvas.requestPaint()
                     controller.undo();
                 }
             }
@@ -88,8 +77,95 @@ Window {
             }
         }
 
-        Canvas{
-            id:canvas
+//        Canvas{
+//            id:canvas
+//            anchors {
+//                left: parent.left
+//                right:parent.right
+//                top:colorTools.bottom
+//                bottom: parent.bottom
+//                margins: 8
+//            }
+//            property real lastX
+//            property real lastY
+//            property real currentX
+//            property real currentY
+//            property color color:colorTools.painterColor
+//            property bool isSender:true
+
+//            onPaint: {
+//                var ctx = getContext("2d")
+
+//                //本地数据绘制
+//                if(isSender){
+//                    ctx.strokeStyle =color
+//                    ctx.lineWidth = 4
+//                    ctx.beginPath()
+
+//                    //console.log("local pos data")
+
+//                    ctx.moveTo(lastX,lastY)
+//                    currentX = area.mouseX
+//                    currentY = area.mouseY
+//                    ctx.lineTo(currentX,currentY)
+//                    lastX = currentX
+//                    lastY = currentY
+//                    ctx.stroke()
+//                }
+//                //远端接受数据绘制
+//                else
+//                {
+//                    //console.log("net pos data")
+//                    ctx.strokeStyle =dataModel.pointData.color
+//                    ctx.lineWidth = 4
+//                    ctx.beginPath()
+
+//                    if(dataModel.pointData.opera===0){
+//                        console.log("dataModel.pointData.opera===0")
+//                        lastX = dataModel.pointData.posX
+//                        lastY = dataModel.pointData.posY
+//                        console.log("lastX,lastY"+lastX+" "+lastY)
+//                    }
+//                    else if(dataModel.pointData.opera===2){
+//                        console.log("dataModel.pointData.opera===2")
+//                        ctx.moveTo(lastX,lastY)
+//                        currentX = dataModel.pointData.posX
+//                        currentY = dataModel.pointData.posY
+//                        lastX = currentX
+//                        lastY = currentY
+//                    }
+//                    if(dataModel.pointData.opera!==1){
+//                        console.log("dataModel.pointData.opera!==1")
+//                        ctx.lineTo(currentX,currentY)
+//                        console.log("currentX,currentY"+currentX+" "+currentY)
+//                        console.log("lastX,lastY"+lastX+" "+lastY)
+//                    }
+//                    ctx.stroke()
+//                }
+//            }
+
+//            MouseArea{
+//                id:area
+//                anchors.fill: canvas
+//                onPressed:{
+//                    canvas.isSender = true
+//                    canvas.lastX = mouseX
+//                    canvas.lastY = mouseY
+//                    controller.onMousePressed(mouseX,mouseY);
+//                }
+//                onReleased: {
+//                    canvas.isSender = false
+//                    controller.onMouseRelesed(mouseX,mouseY);
+//                }
+//                onPositionChanged: {
+//                    controller.onMousePositionChanged(mouseX,mouseY);
+//                    canvas.requestPaint()
+//                }
+//            }
+//        }
+
+        View{
+            id:view
             anchors {
                 left: parent.left
                 right:parent.right
@@ -97,97 +173,23 @@ Window {
                 bottom: parent.bottom
                 margins: 8
             }
-            property real lastX
-            property real lastY
-            property real currentX
-            property real currentY
-            property color color:colorTools.painterColor
-            property bool isSender:true
-
-            onPaint: {
-                var ctx = getContext("2d")
-
-                //本地数据绘制
-                if(isSender){
-                    ctx.strokeStyle =color
-                    ctx.lineWidth = 4
-                    ctx.beginPath()
-
-                    console.log("local pos data")
-
-                    ctx.moveTo(lastX,lastY)
-                    currentX = area.mouseX
-                    currentY = area.mouseY
-                    ctx.lineTo(currentX,currentY)
-                    lastX = currentX
-                    lastY = currentY
-                    ctx.stroke()
-                }
-                //远端接受数据绘制
-                else
-                {
-                    console.log("net pos data")
-                    ctx.strokeStyle =dataModel.pointData.color
-                    ctx.lineWidth = 4
-                    ctx.beginPath()
-
-                    if(dataModel.pointData.opera===0){
-                        console.log("dataModel.pointData.opera===0")
-                        lastX = dataModel.pointData.posX
-                        lastY = dataModel.pointData.posY
-                        console.log("lastX,lastY"+lastX+" "+lastY)
-                    }
-                    else if(dataModel.pointData.opera===2){
-                        console.log("dataModel.pointData.opera===2")
-                        ctx.moveTo(lastX,lastY)
-                        currentX = dataModel.pointData.posX
-                        currentY = dataModel.pointData.posY
-                        lastX = currentX
-                        lastY = currentY
-                    }
-                    if(dataModel.pointData.opera!==1){
-                        console.log("dataModel.pointData.opera!==1")
-                        ctx.lineTo(currentX,currentY)
-                        console.log("currentX,currentY"+currentX+" "+currentY)
-                        console.log("lastX,lastY"+lastX+" "+lastY)
-                    }
-                    ctx.stroke()
-                }
-            }
-
             MouseArea{
-                id:area
-                anchors.fill: canvas
+                id:touchArea
+                anchors.fill:parent
                 onPressed:{
-                    canvas.isSender = true
-                    canvas.lastX = mouseX
-                    canvas.lastY = mouseY
-                    //dataModel.broadcastDatagram(mouseX,mouseY,0,canvas.color)
                     controller.onMousePressed(mouseX,mouseY);
+                    view.update();
                 }
                 onReleased: {
-                    canvas.isSender = false
-                    //dataModel.broadcastDatagram(mouseX,mouseY,1,canvas.color)
                     controller.onMouseRelesed(mouseX,mouseY);
+                    view.update();
                 }
                 onPositionChanged: {
-
-                    //dataModel.broadcastDatagram(mouseX,mouseY,2,canvas.color)
-
                     controller.onMousePositionChanged(mouseX,mouseY);
-                    canvas.requestPaint()
-
-                }
-            }
-
-            Component.onCompleted: {
-                if(canvas.available){
-                    console.log("Component.onCompleted")
-                    var ctx = canvas.getContext("2d")
-                    ctx.fillStyle = "white"
-                    ctx.fillRect(0,0,canvas.width,canvas.height)
+                    view.update()
                 }
             }
         }
+
     }
 }

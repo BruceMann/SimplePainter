@@ -3,34 +3,40 @@
 
 #include <QDebug>
 
-SP_Model::SP_Model(QObject *parent)
+SPModel::SPModel(QObject *parent)
     :QObject(parent)
 {
-//    connect(m_controller,&SP_Controller::notifyPainterState,[=](QColor color){
-//        m_color = color;
-//    });
-
-
 
 }
 
-SP_Model::~SP_Model()
+SPModel::SPModel(QObject *parent, SPController *ctr)
+    :QObject(parent)
 {
-
-}
-
-void SP_Model::setController(SP_Controller *ctr)
-{
+    qDebug()<<"SPModel::setController"<<ctr->objectName();
     m_controller = ctr;
 
-    connect(this,&SP_Model::UnTodoEvent,m_controller,&SP_Controller::UnTodoEventHandler);
-    connect(m_controller,&SP_Controller::undosigal,this,&SP_Model::undo);
+        //connect(m_controller,&SP_Controller::undosigal,this,&SPModel::undo);
+
+   // connect(this,&SPModel::UnTodoEvent,m_controller,&SP_Controller::UnTodoEventHandler);
+
+}
+
+SPModel::~SPModel()
+{
+
+}
+
+void SPModel::setController(SPController *ctr)
+{
+
+
 }
 
 //开始收集点
-void SP_Model::onBeginColloctPoint(int x, int y)
+void SPModel::onBeginColloctPoint(int x, int y)
 {
     if(m_points.empty()){
+        //qDebug()<<"onBeginColloctPoint m_points.append("<<x<<" "<<y<<")";
         m_points.append(QPoint(x,y));
     }else{
         //TODO::error 处理
@@ -38,37 +44,39 @@ void SP_Model::onBeginColloctPoint(int x, int y)
 }
 
 //结束收集点过程
-void SP_Model::onEndColloctPoint(int x, int y)
+void SPModel::onEndColloctPoint(int x, int y)
 {
     if(m_points.empty()){
         //TODO::error 处理
     }else{
-        m_points.clear();
         ActionData a(m_points,m_color);
         m_UndoStack.push(a);
+        //qDebug()<<"onEndColloctPoint m_UndoStack.size("<<m_UndoStack.size()<<")";
+        m_points.clear();
     }
 }
 
 //收集点过程
-void SP_Model::onColloctPoint(int x, int y)
+void SPModel::onColloctPoint(int x, int y)
 {
     if(m_points.empty()){
         //TODO::error 处理
     }else{
+        //qDebug()<<"onColloctPoint m_points.append("<<x<<" "<<y<<")";
         m_points.append(QPoint(x,y));
     }
 }
 
-void SP_Model::undo(int times)
+void SPModel::undo()
 {
-    qDebug()<<"SP_Controller::undo() ccccccccccccccccc";
-    Q_UNUSED(times)
+    //qDebug()<<"SP_Controller::undo() ccccccccccccccccc";
 
     if(m_UndoStack.empty()){
         return;
     }
-    ActionData temp = m_UndoStack.pop();
+    ActionData temp = m_UndoStack.top();
     m_TodoStack.push(temp);
+    m_UndoStack.pop();
 
     emit UnTodoEvent(temp.points);
 }

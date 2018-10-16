@@ -1,50 +1,64 @@
 #include "sp_controller.h"
+#include "sp_model.h"
 #include <QDebug>
 
-SP_Controller::SP_Controller(QObject* parent):QObject(parent)
+SPController::SPController(QObject* parent):QObject(parent)
+{
+    m_model = new SPModel;
+
+    connect(this,SIGNAL(undosigal()),m_model,SLOT(undo()));
+    connect(m_model,&SPModel::UnTodoEvent,this,&SPController::UnTodoEventHandler);
+}
+
+SPController::~SPController()
 {
 
 }
 
-SP_Controller::~SP_Controller()
-{
-
-}
-
-void SP_Controller::onMousePressed(int x, int y)
+void SPController::onMousePressed(int x, int y)
 {
     m_mouseAction = 1;
+
+    m_model->onBeginColloctPoint(x,y);
+
     emit notifyPainterState(m_color);
-    emit beginCollectPoint(x,y);
+
     emit sendData(m_mouseAction,x,y);
 }
 
-void SP_Controller::onMouseRelesed(int x, int y)
+void SPController::onMouseRelesed(int x, int y)
 {
     m_mouseAction = 0;
-    emit endCollectPoint(x,y);
+    //emit endCollectPoint(x,y);
+    m_model->onEndColloctPoint(x,y);
+
     emit sendData(m_mouseAction,x,y);
 }
 
-void SP_Controller::onMousePositionChanged(int x, int y)
+void SPController::onMousePositionChanged(int x, int y)
 {
     m_mouseAction = 2;
-    emit collectPoint(x,y);
+    m_model->onColloctPoint(x,y);
+
+//    emit collectPoint(x,y);
     emit sendData(m_mouseAction,x,y);
 }
 
-void SP_Controller::onColorChange(QColor color)
+void SPController::onColorChange(QColor color)
 {
     m_color = color;
 }
 
-void SP_Controller::undo()
+void SPController::undo()
 {
-    qDebug()<<"SP_Controller::undo()";
-    emit undosigal(1);
+    qDebug()<<"SPController::undo()";
+     m_model->undo();
 }
 
-void SP_Controller::UnTodoEventHandler(QList<QPoint> &data)
+void SPController::UnTodoEventHandler(QList<QPoint> &data)
 {
+    qDebug()<<"DDDDDDDDDD";
     qDebug()<<"DDDDDDDDDD"<<data.size();
+
+    //Todo 通知view重新绘制
 }

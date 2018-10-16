@@ -18,7 +18,8 @@ SOURCES += \
     datamodel.cpp \
     sp_controller.cpp \
     sp_proxy.cpp \
-    sp_model.cpp
+    sp_model.cpp \
+    paintedItem.cpp
 
 RESOURCES += qml.qrc
 
@@ -37,6 +38,7 @@ HEADERS += \
     datamodel.h \
     sp_controller.h \
     sp_proxy.h \
-    sp_model.h
+    sp_model.h \
+    paintedItem.h
 
 DISTFILES +=

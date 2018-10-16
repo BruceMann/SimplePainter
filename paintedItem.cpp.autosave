@@ -1,0 +1,24 @@
+#include "paintedItem.h"
+
+SPView::SPView(QQuickItem *parent)
+    :QQuickPaintedItem(parent)
+{
+
+}
+
+SPView::~SPView()
+{
+    
+}
+
+void SPView::paint(QPainter *painer)
+{
+    
+}
+
+void SPView::clear()
+{
+    purgePaintElements();
+    update();
+}
+
