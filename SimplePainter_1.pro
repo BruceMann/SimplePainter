@@ -19,7 +19,7 @@ SOURCES += \
     sp_controller.cpp \
     sp_proxy.cpp \
     sp_model.cpp \
-    paintedItem.cpp
+    painteditem.cpp
 
 RESOURCES += qml.qrc
 
@@ -39,6 +39,7 @@ HEADERS += \
     sp_controller.h \
     sp_proxy.h \
     sp_model.h \
-    paintedItem.h
+    painteditem.h \
+    define.h
 
 DISTFILES +=

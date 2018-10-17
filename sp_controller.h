@@ -6,34 +6,40 @@
 #include <QPoint>
 #include <QList>
 
-class SPModel;
+#include "define.h"
 
-//class painterStates:public QObject
-//{
-//    Q_OBJECT
-//public:
-//    QColor m_color;        //记录画笔颜色
-//    int m_pixSize;         //线宽像素大小
-//};
+class SPModel;
+class PaintedItem;
 
 class SPController:public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
 
 public:
     explicit SPController(QObject* parent=nullptr);
 
     ~SPController();
 
+    void setView(PaintedItem* view);
+
+    bool modelData();
+    void setModelData(bool flag);
+
+private:
+    void updateView();
+    const Strokes& getStrokes();
+
 public slots:
-    Q_INVOKABLE void onMousePressed(int x,int y);
-    Q_INVOKABLE void onMouseRelesed(int x,int y);
-    Q_INVOKABLE void onMousePositionChanged(int x,int y);
+     void onMousePressed(int x,int y);
+     void onMouseRelesed(int x,int y);
+     void onMousePositionChanged(int x,int y);
     Q_INVOKABLE void onColorChange(QColor color);
 
     Q_INVOKABLE void undo();
     void UnTodoEventHandler(QList<QPoint>& data);
+    void onPointDataChanged();
 
 signals:
     void beginCollectPoint(int x,int y);
@@ -46,12 +52,17 @@ signals:
 
     void undosigal();
 
+    void modelDataChanged();
+
 private:
     int m_mouseAction;     //记录鼠标操作，暂时用int  0:pressed 1:relesed 2:holdon
 
     QColor m_color;        //记录画笔颜色
     //int m_pixSize;         //线宽像素大小
     SPModel *m_model;
+    PaintedItem *m_view;
+
+    bool m_modelData;
 };
 
 #endif // SPController_H

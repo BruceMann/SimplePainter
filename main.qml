@@ -2,8 +2,8 @@ import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.Controls 2.2
 
-import Controller 1.0
-import View 1.0
+//import Controller 1.0
+import PaintedItem 1.0
 
 Window {
     visible: true
@@ -17,10 +17,12 @@ Window {
         color:"lightBlue"
         anchors.fill:parent
 
-        Controller{
-            id:controller
-
-        }
+//        Controller{
+//            id:controller
+//            onModelDataChanged: {
+//                painter.update()
+//            }
+//        }
 
         Row{
             id:colorTools
@@ -41,6 +43,7 @@ Window {
                     onClicked:{
                         colorTools.painterColor = color
                         console.log(colorTools.painterColor)
+                        painter.penColor = color
                         controller.onColorChange(color);
                     }
                 }
@@ -50,33 +53,29 @@ Window {
 
                 spacing:5
 
-            Button{
-                id:clear
-                width: 96
-                height: 26                
-                text: "clear"
-                onClicked: {
-                    var ctx = canvas.getContext("2d")
-                    ctx.clearRect(0,0,canvas.width,canvas.height)
-                    ctx.fillStyle = "white"
-                    ctx.fillRect(0,0,canvas.width,canvas.height)
-                    canvas.requestPaint()
+                Button{
+                    id:clear
+                    width: 96
+                    height: 26
+                    text: "clear"
+                    onClicked: {
+                        painter.clear()
+                    }
                 }
-            }
 
-            Button{
-                id:undo
-                width: 96
-                height: 20
-                text: "undo"
-                onClicked: {
-                    controller.undo();
+                Button{
+                    id:undo
+                    width: 96
+                    height: 20
+                    text: "undo"
+                    onClicked: {
+                        painter.undo()
+                    }
                 }
-            }
 
             }
         }
-
+        /*
 //        Canvas{
 //            id:canvas
 //            anchors {
@@ -163,9 +162,9 @@ Window {
 //                }
 //            }
 //        }
-
-        View{
-            id:view
+*/
+        PaintedItem{
+            id:painter
             anchors {
                 left: parent.left
                 right:parent.right
@@ -173,23 +172,26 @@ Window {
                 bottom: parent.bottom
                 margins: 8
             }
+            penColor: "red"
+            penWidth: 4
+
             MouseArea{
-                id:touchArea
-                anchors.fill:parent
+                id:area
+                anchors.fill: painter
                 onPressed:{
-                    controller.onMousePressed(mouseX,mouseY);
-                    view.update();
+                    Controller.onMousePressed(mouseX,mouseY);
+                    painter.update()
                 }
                 onReleased: {
-                    controller.onMouseRelesed(mouseX,mouseY);
-                    view.update();
+                    Controller.onMouseRelesed(mouseX,mouseY);
+                    painter.update()
                 }
                 onPositionChanged: {
-                    controller.onMousePositionChanged(mouseX,mouseY);
-                    view.update()
+                    Controller.onMousePositionChanged(mouseX,mouseY);
+                    painter.update()
                 }
             }
-        }
 
+        }
     }
 }

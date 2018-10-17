@@ -3,27 +3,8 @@
 
 #include <QObject>
 #include <QColor>
-#include <QList>
-#include <QStack>
-#include <QPoint>
 
-class SPController;
-
-typedef QList<QPoint> PointsList;
-
-class ActionData    //一个操作的数据结构
-{
-   public:
-    ActionData(){}
-
-    ActionData(PointsList p,QColor c){
-        points = p;
-        states = c;
-    }
-    PointsList points;
-    QColor states;
-};
-
+#include "define.h"
 
 
 class SPModel:public QObject
@@ -31,10 +12,9 @@ class SPModel:public QObject
     Q_OBJECT
 public:
     explicit SPModel(QObject *parent = nullptr);
-    SPModel(QObject *parent, SPController *ctr);
     ~SPModel();
 
-    void setController(SPController* ctr);
+    const Strokes& getStrokes();
 
 public slots:
     void onBeginColloctPoint(int x,int y);
@@ -45,14 +25,14 @@ public slots:
 
 signals:
     void UnTodoEvent(PointsList& points);
+    void pointDataChanged();
 
 private:
-    QColor m_color;  //TODO 此处要改为painterState数据结构，以记录其他绘画状态
-    PointsList m_points;             //画一笔的点集合
-    QStack<ActionData> m_UndoStack;  //Undo操作栈
-    QStack<ActionData> m_TodoStack;  //Redo操作栈
-
-    SPController *m_controller;
+    QColor m_color;              //TODO 此处要改为painterState数据结构，以记录其他绘画状态
+    Stroke *m_stroke;            //画一笔的点集合
+    Strokes m_stokeVec;         //所有元素
+    QStack<Stroke> m_UndoStack;  //Undo操作栈
+    QStack<Stroke> m_TodoStack;  //Redo操作栈
 };
 
 #endif // SPModel_H

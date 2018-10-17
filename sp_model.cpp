@@ -1,6 +1,4 @@
 #include "sp_model.h"
-#include "sp_controller.h"
-
 #include <QDebug>
 
 SPModel::SPModel(QObject *parent)
@@ -9,76 +7,68 @@ SPModel::SPModel(QObject *parent)
 
 }
 
-SPModel::SPModel(QObject *parent, SPController *ctr)
-    :QObject(parent)
-{
-    qDebug()<<"SPModel::setController"<<ctr->objectName();
-    m_controller = ctr;
-
-        //connect(m_controller,&SP_Controller::undosigal,this,&SPModel::undo);
-
-   // connect(this,&SPModel::UnTodoEvent,m_controller,&SP_Controller::UnTodoEventHandler);
-
-}
-
 SPModel::~SPModel()
 {
 
 }
 
-void SPModel::setController(SPController *ctr)
+const Strokes &SPModel::getStrokes()
 {
-
-
+    qDebug()<<"const Strokes &SPModel::getStrokes()"<<m_stokeVec.size();
+    foreach (Stroke* iter, m_stokeVec) {
+       qDebug()<<"iter.points.size()"<<iter->points.size();
+    }
+    return m_stokeVec;
 }
 
-//开始收集点
 void SPModel::onBeginColloctPoint(int x, int y)
 {
-    if(m_points.empty()){
-        //qDebug()<<"onBeginColloctPoint m_points.append("<<x<<" "<<y<<")";
-        m_points.append(QPoint(x,y));
-    }else{
-        //TODO::error 处理
-    }
+    qDebug()<<"onBeginColloctPoint"<<x<<" "<<y;
+    m_stroke = new Stroke;
+    //qDebug()<<"onBeginColloctPoint  before m_stokeVec.size() :"<<m_stokeVec.size();
+    m_stokeVec.push_back(m_stroke);
+    qDebug()<<"onBeginColloctPoint   m_stokeVec.size() :"<<m_stokeVec.size();
+    m_stroke->points.append(QPoint(x,y));
+    m_stroke->states = m_color;
+    emit pointDataChanged();
 }
 
-//结束收集点过程
 void SPModel::onEndColloctPoint(int x, int y)
 {
-    if(m_points.empty()){
+
+    if(m_stroke->points.empty()){
         //TODO::error 处理
     }else{
-        ActionData a(m_points,m_color);
-        m_UndoStack.push(a);
-        //qDebug()<<"onEndColloctPoint m_UndoStack.size("<<m_UndoStack.size()<<")";
-        m_points.clear();
+
+        qDebug()<<"onEndColloctPoint   m_stokeVec.size() :"<<m_stokeVec.size();
+        //qDebug()<<"onEndColloctPoint   Points num:"<<points.size();
+        //m_UndoStack.push(*m_stroke);
+        emit pointDataChanged();
     }
 }
 
-//收集点过程
 void SPModel::onColloctPoint(int x, int y)
 {
-    if(m_points.empty()){
+
+    if(m_stroke->points.empty()){
         //TODO::error 处理
     }else{
-        //qDebug()<<"onColloctPoint m_points.append("<<x<<" "<<y<<")";
-        m_points.append(QPoint(x,y));
+        //qDebug()<<"onColloctPoint"<<x<<" "<<y;
+        m_stroke->points.append(QPoint(x,y));
+        emit pointDataChanged();
     }
 }
 
 void SPModel::undo()
 {
-    //qDebug()<<"SP_Controller::undo() ccccccccccccccccc";
+//    if(m_UndoStack.empty()){
+//        return;
+//    }
+//    ActionData temp = m_UndoStack.top();
+//    m_TodoStack.push(temp);
+//    m_UndoStack.pop();
 
-    if(m_UndoStack.empty()){
-        return;
-    }
-    ActionData temp = m_UndoStack.top();
-    m_TodoStack.push(temp);
-    m_UndoStack.pop();
-
-    emit UnTodoEvent(temp.points);
+    //emit UnTodoEvent(temp.points);
 }
 
 
