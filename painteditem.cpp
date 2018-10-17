@@ -8,6 +8,7 @@
 #include <QDebug>
 #include "sp_controller.h"
 
+#include "define.h"
 
 extern SPController *controller;
 
@@ -78,14 +79,26 @@ void PaintedItem::paint(QPainter *painter)
     Stroke* stroke;
     for(int i = 0;i<size;++i){
         stroke = m_Strokes.at(i);
-        painter->setPen(stroke->states);
+        //m_pen.setColor(stroke->states);
+        //m_pen.setWidth(4);
+        //painter->setPen(m_pen);
 
-        int num = stroke->points.size();
-        for(int j = 0;j+1<num;++j){
-            QPoint p1 = stroke->points.at(j);
-            QPoint p2 = stroke->points.at(j+1);
-            painter->drawLine(p1,p2);
+//        int num = stroke->points.size();
+//        for(int j = 0;j+1<num;++j){
+//            QPoint p1 = stroke->points.at(j);
+//            QPoint p2 = stroke->points.at(j+1);
+//            painter->drawLine(p1,p2);
+//        }
+
+        //qDebug()<<"stroke->arr->len"<<stroke->arr->point.size();
+        int point_num = stroke->arr->point.size();
+        for(int i=1; i<point_num; i++) {
+            m_pen.setColor(stroke->states);
+            m_pen.setWidth(5*stroke->arr->point[i].w);
+            painter->setPen(m_pen);
+            painter->drawLine(QPointF( stroke->arr->point[i-1].p.x,  stroke->arr->point[i-1].p.y), QPointF( stroke->arr->point[i].p.x,  stroke->arr->point[i].p.y));
         }
+
     }
 }
 

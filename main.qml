@@ -44,7 +44,7 @@ Window {
                         colorTools.painterColor = color
                         console.log(colorTools.painterColor)
                         painter.penColor = color
-                        controller.onColorChange(color);
+                        Controller.onColorChange(color);
                     }
                 }
             }
@@ -59,7 +59,7 @@ Window {
                     height: 26
                     text: "clear"
                     onClicked: {
-                        painter.clear()
+                        Controller.clear()
                     }
                 }
 
@@ -69,7 +69,7 @@ Window {
                     height: 20
                     text: "undo"
                     onClicked: {
-                        painter.undo()
+                        Controller.undo()
                     }
                 }
 
@@ -180,15 +180,15 @@ Window {
                 anchors.fill: painter
                 onPressed:{
                     Controller.onMousePressed(mouseX,mouseY);
-                    painter.update()
+                   //painter.update()
                 }
                 onReleased: {
                     Controller.onMouseRelesed(mouseX,mouseY);
-                    painter.update()
+                   // painter.update()
                 }
                 onPositionChanged: {
                     Controller.onMousePositionChanged(mouseX,mouseY);
-                    painter.update()
+                   //painter.update()
                 }
             }
 

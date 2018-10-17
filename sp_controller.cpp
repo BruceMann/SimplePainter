@@ -11,7 +11,6 @@ SPController::SPController(QObject* parent):QObject(parent)
     m_model = new SPModel;
 
     connect(this,SIGNAL(undosigal()),m_model,SLOT(undo()));
-    connect(m_model,&SPModel::UnTodoEvent,this,&SPController::UnTodoEventHandler);
     connect(m_model,&SPModel::pointDataChanged,this,&SPController::onPointDataChanged);
 }
 
@@ -23,10 +22,6 @@ SPController::~SPController()
 void SPController::setView(PaintedItem *view)
 {
     m_view = view;
-
-    connect(m_view,&PaintedItem::mouseMove,this,&SPController::onMousePositionChanged);
-    connect(m_view,&PaintedItem::mousePresse,this,&SPController::onMousePressed);
-    connect(m_view,&PaintedItem::mouseRelease,this,&SPController::onMouseRelesed);
 }
 
 bool SPController::modelData()
@@ -83,20 +78,19 @@ void SPController::onMousePositionChanged(int x, int y)
 void SPController::onColorChange(QColor color)
 {
     m_color = color;
+    m_model->setStates(color);
 }
 
 void SPController::undo()
 {
     qDebug()<<"SPController::undo()";
-     m_model->undo();
+    m_model->undo();
 }
 
-void SPController::UnTodoEventHandler(QList<QPoint> &data)
+void SPController::clear()
 {
-    qDebug()<<"DDDDDDDDDD";
-    qDebug()<<"DDDDDDDDDD"<<data.size();
-
-    //Todo 通知view重新绘制
+    qDebug()<<"SPController::undo()";
+    m_model->clear();
 }
 
 void SPController::onPointDataChanged()

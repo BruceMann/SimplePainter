@@ -15,6 +15,7 @@ public:
     ~SPModel();
 
     const Strokes& getStrokes();
+    void setStates(const QColor state);
 
 public slots:
     void onBeginColloctPoint(int x,int y);
@@ -22,9 +23,9 @@ public slots:
     void onColloctPoint(int x,int y);
 
     void undo();    //undo操作，@param times 撤销次数 默认一次TODO::目前只处理一次
+    void clear();
 
 signals:
-    void UnTodoEvent(PointsList& points);
     void pointDataChanged();
 
 private:

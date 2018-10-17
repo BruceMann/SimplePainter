@@ -32,13 +32,14 @@ private:
     const Strokes& getStrokes();
 
 public slots:
-     void onMousePressed(int x,int y);
-     void onMouseRelesed(int x,int y);
-     void onMousePositionChanged(int x,int y);
+    Q_INVOKABLE void onMousePressed(int x,int y);
+    Q_INVOKABLE void onMouseRelesed(int x,int y);
+    Q_INVOKABLE void onMousePositionChanged(int x,int y);
     Q_INVOKABLE void onColorChange(QColor color);
 
     Q_INVOKABLE void undo();
-    void UnTodoEventHandler(QList<QPoint>& data);
+    Q_INVOKABLE void clear();
+
     void onPointDataChanged();
 
 signals:
