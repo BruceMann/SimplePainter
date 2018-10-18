@@ -6,7 +6,7 @@ Rectangle {
     signal clicked
 
     border.width: 4
-    border.color: active?"grey":"white"
+    border.color: active?"grey":"#d3d3d3"
 
     MouseArea{
         id:mouseHandle

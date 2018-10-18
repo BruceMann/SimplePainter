@@ -11,18 +11,10 @@ Window {
     height: 480
     title: qsTr("SimplePainter")
 
-
     Rectangle{
         id:root
-        color:"lightBlue"
+        color:"#fafad2"
         anchors.fill:parent
-
-//        Controller{
-//            id:controller
-//            onModelDataChanged: {
-//                painter.update()
-//            }
-//        }
 
         Row{
             id:colorTools
@@ -72,7 +64,6 @@ Window {
                         Controller.undo()
                     }
                 }
-
             }
         }
         /*

@@ -4,7 +4,8 @@
 SPModel::SPModel(QObject *parent)
     :QObject(parent)
 {
-
+    m_userID = QUuid::createUuid();
+    qDebug()<<"my userID is: "<<m_userID;
 }
 
 SPModel::~SPModel()
@@ -15,9 +16,6 @@ SPModel::~SPModel()
 const Strokes &SPModel::getStrokes()
 {
     qDebug()<<"const Strokes &SPModel::getStrokes()"<<m_stokeVec.size();
-    foreach (Stroke* iter, m_stokeVec) {
-       //qDebug()<<"iter.points.size()"<<iter->points.size();
-    }
     return m_stokeVec;
 }
 
@@ -26,14 +24,17 @@ void SPModel::setStates(const QColor state)
     m_color = state;
 }
 
-void SPModel::onBeginColloctPoint(int x, int y)
+const QUuid &SPModel::getUserId()
 {
-    qDebug()<<"onBeginColloctPoint"<<x<<" "<<y;
+    return m_userID;
+}
+
+void SPModel::onBeginColloctPoint(QUuid id, int x, int y)
+{
     m_stroke = new Stroke;
-    //qDebug()<<"onBeginColloctPoint  before m_stokeVec.size() :"<<m_stokeVec.size();
+    m_stroke->ownerID = id;
     m_stokeVec.append(m_stroke);
-    qDebug()<<"onBeginColloctPoint   m_stokeVec.size() :"<<m_stokeVec.size();
-    //m_stroke->points.append(QPoint(x,y));
+
     z_insert_point(m_stroke->arr,{(float)x, (float)y});
     m_stroke->states = m_color;
     emit pointDataChanged();
@@ -41,35 +42,35 @@ void SPModel::onBeginColloctPoint(int x, int y)
 
 void SPModel::onEndColloctPoint(int x, int y)
 {
-    //if(m_stroke->points.empty()){
-        //TODO::error 处理
-    //}else{
-        qDebug()<<"onEndColloctPoint   m_stokeVec.size() :"<<m_stokeVec.size();
-        //qDebug()<<"onEndColloctPoint   Points num:"<<points.size();
-        z_insert_last_point(m_stroke->arr, {(float)x, (float)y});
-        m_UndoStack.push(*m_stroke);
-        emit pointDataChanged();
-    //}
+    z_insert_last_point(m_stroke->arr, {(float)x, (float)y});
+    m_UndoStack.push(*m_stroke);
+    emit pointDataChanged();
 }
 
 void SPModel::onColloctPoint(int x, int y)
 {
-   // if(m_stroke->points.empty()){
-        //TODO::error 处理
-    //}else{
-        //qDebug()<<"onColloctPoint"<<x<<" "<<y;
-        //m_stroke->points.append(QPoint(x,y));
-        z_insert_point(m_stroke->arr,{(float)x, (float)y});
-        emit pointDataChanged();
-   // }
+    z_insert_point(m_stroke->arr,{(float)x, (float)y});
+    emit pointDataChanged();
 }
 
-void SPModel::undo()
-{
+void SPModel::undo(QUuid uid)
+{   
+    qDebug()<<"void SPModel::undo(QUuid uid)"<<uid;
     if(m_stokeVec.empty()){
         return;
     }
-    m_stokeVec.takeLast();
+    for(QVector<Stroke*>::reverse_iterator iter=m_stokeVec.rbegin();iter!=m_stokeVec.rend();++iter)
+    {
+
+//        if(m_stokeVec.takeLast()->ownerID==uid)
+
+        if(((*iter)->ownerID)==uid)
+        {
+            m_stokeVec.erase(&(*iter));
+            break;
+        }
+    }
+    //m_stokeVec.takeLast();
     emit pointDataChanged();
 }
 

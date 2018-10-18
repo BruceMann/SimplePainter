@@ -8,45 +8,6 @@
 
 #include "define.h"
 
-
-
-
-class ElementGroup
-{
-public:
-    ElementGroup()
-    {
-    }
-
-    ElementGroup(const QPen &pen)
-        : m_pen(pen)
-    {
-    }
-
-    ElementGroup(const ElementGroup &e)
-    {
-        m_lines = e.m_lines;
-        m_pen = e.m_pen;
-    }
-
-    ElementGroup & operator=(const ElementGroup &e)
-    {
-        if(this != &e)
-        {
-            m_lines = e.m_lines;
-            m_pen = e.m_pen;
-        }
-        return *this;
-    }
-
-    ~ElementGroup()
-    {
-    }
-
-    QVector<QLineF> m_lines;
-    QPen m_pen;
-};
-
 class PaintedItem : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -70,8 +31,6 @@ public:
     void setStrokes(const Strokes& strokes);
     void updateView();
 
-    Q_INVOKABLE void clear();
-    Q_INVOKABLE void undo();
 
     void paint(QPainter *painter);
 
@@ -80,16 +39,10 @@ signals:
     void mouseRelease(int x,int y);
     void mouseMove(int x,int y);
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void purgePaintElements();
+
 
 protected:
     QPointF m_lastPoint;
-    QVector<ElementGroup*> m_elements;
-    ElementGroup * m_element; // the Current ElementGroup
     bool m_bEnabled;
     bool m_bPressed;
     bool m_bMoved;
