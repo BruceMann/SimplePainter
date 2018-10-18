@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 //    PaintedItem m_painter;
 //    engine.rootContext()->setContextProperty("PaintedItem",m_painter);
 
-
 //    controller.setView(painter);
 
 

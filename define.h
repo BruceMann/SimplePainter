@@ -9,8 +9,6 @@
 
 #include "z_math.h"
 
-typedef QList<QPoint> PointsList;
-
 class Stroke    //一个操作的数据结构
 {
    public:

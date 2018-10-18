@@ -14,10 +14,7 @@ extern SPController *controller;
 
 PaintedItem::PaintedItem(QQuickItem *parent)
     : QQuickPaintedItem(parent)
-    , m_bEnabled(true)
-    , m_bPressed(false)
-    , m_bMoved(false)
-    , m_pen(Qt::black)
+    , m_pen(Qt::red)
 {
     setAcceptedMouseButtons(Qt::LeftButton);
     qDebug()<<"PaintedItem::PaintedItem(QQuickItem *parent)";
@@ -31,24 +28,22 @@ PaintedItem::~PaintedItem()
 
 void PaintedItem::setStrokes(const Strokes &strokes)
 {
-    qDebug()<<"void PaintedItem::setStrokes(Strokes *strokes)"<<strokes.size();
+    //qDebug()<<"void PaintedItem::setStrokes(Strokes *strokes)"<<strokes.size();
     m_Strokes = strokes;
-    update();
-}
-
-void PaintedItem::updateView()
-{
-    qDebug()<<"void PaintedItem::updateView()";
     update();
 }
 
 void PaintedItem::paint(QPainter *painter)
 {
+    if(m_Strokes.empty())
+        return;
+
     painter->setRenderHint(QPainter::Antialiasing);
 
     int size = m_Strokes.size();
 
     qDebug()<<"void PaintedItem::paint(QPainter *painter)"<<size;
+
     Stroke* stroke;
     for(int i = 0;i<size;++i){
         stroke = m_Strokes.at(i);
@@ -60,7 +55,6 @@ void PaintedItem::paint(QPainter *painter)
             painter->setPen(m_pen);
             painter->drawLine(QPointF( stroke->arr->point[i-1].p.x,  stroke->arr->point[i-1].p.y), QPointF( stroke->arr->point[i].p.x,  stroke->arr->point[i].p.y));
         }
-
     }
 }
 

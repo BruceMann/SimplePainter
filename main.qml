@@ -156,6 +156,7 @@ Window {
 */
         PaintedItem{
             id:painter
+
             anchors {
                 left: parent.left
                 right:parent.right
@@ -164,7 +165,6 @@ Window {
                 margins: 8
             }
             penColor: "red"
-            penWidth: 4
 
             MouseArea{
                 id:area
