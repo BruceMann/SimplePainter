@@ -59,7 +59,7 @@ private:
     PaintedItem *m_view;   //当前的paintedItem
     SPProxy *m_proxy;
 
-
+    
 };
 
 #endif // SPController_H

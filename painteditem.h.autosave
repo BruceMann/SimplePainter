@@ -21,7 +21,7 @@ public:
     QColor penColor() const { return m_pen.color(); }
     void setPenColor(QColor color) { m_pen.setColor(color); }
 
-    void setStrokes(const Strokes& strokes);
+    void setStroke(Stroke* stroke);
 
     void paint(QPainter *painter);
 
