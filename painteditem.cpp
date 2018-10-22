@@ -16,6 +16,8 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     : QQuickPaintedItem(parent)
     , m_pen(Qt::red)
 {
+    //setRenderTarget(QQuickPaintedItem::FramebufferObject);
+    setRenderTarget(QQuickPaintedItem::Image);
     setAcceptedMouseButtons(Qt::LeftButton);
     qDebug()<<"PaintedItem::PaintedItem(QQuickItem *parent)";
     controller->setView(this);
